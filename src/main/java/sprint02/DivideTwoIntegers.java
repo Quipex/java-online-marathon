@@ -31,11 +31,7 @@ public class DivideTwoIntegers {
 //        the only case of overflow
         if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
 
-        int sign = -1;
-        if ((dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0)) {
-            sign = 1;
-        }
-
+        boolean isPositive = (dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0);
         dividend = abs(dividend);
         divisor = abs(divisor);
         int result = 0;
@@ -47,7 +43,7 @@ public class DivideTwoIntegers {
             result += 1 << x;
             dividend -= divisor << x;
         }
-        return result * sign;
+        return isPositive ? result : -result;
     }
 
     private static int abs(int number) {
