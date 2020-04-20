@@ -1,7 +1,7 @@
 package sprint06;
 
 import java.util.*;
-import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Sprint06Task1 {
@@ -148,42 +148,29 @@ public class Sprint06Task1 {
         }
     }
 
+    static class CoolWorker extends Worker {
+
+        public CoolWorker(String name, String workPosition, int experienceYears) {
+            super(name, workPosition, experienceYears);
+        }
+    }
+
     public static class MyUtils {
         public static List<Person> maxDuration(List<Person> persons) {
-            if (persons.isEmpty()) {
+            List<Person> filteredPersons = persons.stream().filter(Objects::nonNull)
+                    .filter(p -> p.occupationYears() >= 0).collect(Collectors.toList());
+            if (filteredPersons.isEmpty()) {
                 return new ArrayList<>();
             }
-            Map<Class<? extends Person>, List<Person>> personClassToMaxDurationPeople = new HashMap<>();
-            for (Person person : persons) {
-                if (person != null && person.occupationYears() >= 0) {
-                    Class<? extends Person> personClass = person.getClass();
-                    List<Person> maxDurPeople = personClassToMaxDurationPeople
-                            .getOrDefault(personClass, new ArrayList<>());
-                    updateListWithMaxDurationPeople(maxDurPeople, person);
-                    personClassToMaxDurationPeople.put(personClass, maxDurPeople);
-                }
-            }
-            return personClassToMaxDurationPeople.values().stream()
-                    .flatMap(Collection::stream).collect(Collectors.toList());
+            Map<Class<? extends Person>, Optional<Integer>> classToMaxDuration = filteredPersons.stream()
+                    .collect(toMapClassToMaxDuration());
+            return filteredPersons.stream().filter(person -> classToMaxDuration.get(person.getClass())
+                    .orElseThrow(IllegalArgumentException::new) == person.occupationYears()).collect(Collectors.toList());
         }
 
-        private static void updateListWithMaxDurationPeople(List<Person> maxDurPeople, Person person) {
-            int maxDuration = duration(maxDurPeople);
-            if (person.occupationYears() > maxDuration) {
-                maxDurPeople.clear();
-            }
-            if (person.occupationYears() >= maxDuration) {
-                maxDurPeople.add(person);
-            }
-        }
-
-        private static int duration(List<Person> personList) {
-            if (personList.size() == 0) {
-                return Integer.MIN_VALUE;
-            } else {
-                Person person = personList.get(0);
-                return person.occupationYears();
-            }
+        private static Collector<Person, ?, Map<Class<? extends Person>, Optional<Integer>>> toMapClassToMaxDuration() {
+            return Collectors.groupingBy(Person::getClass,
+                    Collectors.mapping(Person::occupationYears, Collectors.maxBy(Comparator.naturalOrder())));
         }
     }
 }

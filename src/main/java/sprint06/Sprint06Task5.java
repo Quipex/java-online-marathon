@@ -155,21 +155,9 @@ public class Sprint06Task5 {
 
     static public class MyUtils {
         public static Map<String, Double> averageRating(List<Caffee> coffees) {
-            List<Caffee> filteredCoffees = coffees.stream()
+            return coffees.stream()
                     .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-            if (filteredCoffees.isEmpty()) {
-                return new HashMap<>();
-            }
-            Map<String, IntSummaryStatistics> coffeeToMovingAverage = new HashMap<>();
-            for (Caffee filteredCoffee : filteredCoffees) {
-                IntSummaryStatistics movingAverage = coffeeToMovingAverage
-                        .getOrDefault(filteredCoffee.getName(), new IntSummaryStatistics());
-                movingAverage.accept(filteredCoffee.getRating());
-                coffeeToMovingAverage.put(filteredCoffee.getName(), movingAverage);
-            }
-            return coffeeToMovingAverage.entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, map -> map.getValue().getAverage()));
+                    .collect(Collectors.groupingBy(Caffee::getName, Collectors.averagingInt(Caffee::getRating)));
         }
     }
 }

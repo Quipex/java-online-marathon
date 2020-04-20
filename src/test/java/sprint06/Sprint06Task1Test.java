@@ -39,7 +39,9 @@ class Sprint06Task1Test {
                 new Worker("Andriy", "Developer", 12),
                 new Student("Stepan", "College", 4),
                 new Worker("Ira", "Manager", 8),
-                new Student("Ihor", "University", 4)
+                new Student("Ihor", "University", 4),
+                null,
+                new CoolWorker("Kile", "qwe", 0),
         };
 
         List<Person> actualPpl = MyUtils.maxDuration(Arrays.asList(people));
@@ -47,7 +49,8 @@ class Sprint06Task1Test {
         Person[] expected = new Person[]{
                 new Worker("Andriy", "Developer", 12),
                 new Student("Stepan", "College", 4),
-                new Student("Ihor", "University", 4)
+                new Student("Ihor", "University", 4),
+                new CoolWorker("Kile", "qwe", 0)
         };
 
         assertEquals(Arrays.asList(expected), actualPpl);

@@ -1,6 +1,7 @@
 package sprint06;
 
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Sprint06Task4 {
@@ -162,33 +163,15 @@ public class Sprint06Task4 {
             if (filteredShapes.isEmpty()) {
                 return new ArrayList<>();
             }
-            Map<Class<? extends Shape>, List<Shape>> uniqueClassesToShapes = new HashMap<>();
-            for (Shape consideredShape : filteredShapes) {
-                Class<? extends Shape> shapeClass = consideredShape.getClass();
-                List<Shape> accumulatedShapes = uniqueClassesToShapes.getOrDefault(shapeClass, new ArrayList<>());
-                updateListWithMaxAreaShapes(accumulatedShapes, consideredShape);
-                uniqueClassesToShapes.put(shapeClass, accumulatedShapes);
-            }
-            return uniqueClassesToShapes.values().stream()
-                    .flatMap(Collection::stream).collect(Collectors.toList());
+            Map<Class<? extends Shape>, Optional<Double>> classToMaxArea = shapes.stream().collect(toMapClassToMaxArea());
+            return filteredShapes.stream()
+                    .filter(shape -> shape.getArea() == classToMaxArea.get(shape.getClass())
+                            .orElseThrow(IllegalArgumentException::new))
+                    .collect(Collectors.toList());
         }
 
-        private static void updateListWithMaxAreaShapes(List<Shape> maxAreaShapes, Shape shape) {
-            double maxArea = area(maxAreaShapes);
-            if (shape.getArea() > maxArea) {
-                maxAreaShapes.clear();
-            }
-            if (shape.getArea() >= maxArea) {
-                maxAreaShapes.add(shape);
-            }
-        }
-
-        private static double area(List<Shape> shapesList) {
-            if (shapesList.size() == 0) {
-                return Integer.MIN_VALUE;
-            } else {
-                return shapesList.get(0).getArea();
-            }
+        private static Collector<Shape, ?, Map<Class<? extends Shape>, Optional<Double>>> toMapClassToMaxArea() {
+            return Collectors.groupingBy(Shape::getClass, Collectors.mapping(Shape::getArea, Collectors.maxBy(Double::compareTo)));
         }
     }
 }
