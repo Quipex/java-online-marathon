@@ -6,3 +6,4 @@ Navigate:
 - [Sprint 04](src/main/java/sprint04/Sprint04.java)
 - [Sprint 05](src/main/java/sprint05/Sprint05.java), [tests](src/test/java/sprint05/Sprint05Test.java)
 - [Sprint 06](src/main/java/sprint06), [tests](src/test/java/sprint06)
+- [Sprint 07](src/main/java/sprint07), [tests](src/test/java/sprint07)
