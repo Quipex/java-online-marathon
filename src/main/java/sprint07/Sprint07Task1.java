@@ -73,8 +73,8 @@ class Sprint07Task1 {
 
     static class Oven {
         public static Pizza cook() {
-            Pizza.PizzaBuilder builder = Pizza.base();
-            return builder.addCheese("Yellow cheese")
+            return Pizza.base()
+                    .addCheese("Yellow cheese")
                     .addMeat("Sausage")
                     .addMushroom("White mushroom")
                     .addVegetable("Paprika")

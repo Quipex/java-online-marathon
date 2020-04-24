@@ -42,7 +42,7 @@ public class AddressBook implements Iterable {
 
     public boolean delete(String firstName, String lastName) {
         int index = indexOf(firstName, lastName);
-        if (index >= 0) {
+        if (index >= 0) { // the key was found
             int numMoved = counter - index - 1;
             if (numMoved > 0) {
                 System.arraycopy(addressBook, index + 1, addressBook, index, numMoved);
